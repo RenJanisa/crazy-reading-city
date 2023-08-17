@@ -1,0 +1,5 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.banner.common.swagger.Swagger2Configuration,\
+  com.banner.common.exception.GlobalExceptionHandler,\
+  com.banner.common.utils.MyMetaObjectHandler,\
+  com.banner.common.xxljob.XxlJobConfig

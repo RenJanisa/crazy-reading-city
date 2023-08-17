@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.banner.user.mapper.CrcUserMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.banner.model.user.pojos.CrcUser">
+        <id column="id" property="id"/>
+        <result column="user_name" property="userName"/>
+        <result column="email" property="email"/>
+        <result column="password" property="password"/>
+        <result column="salt" property="salt"/>
+        <result column="avatar" property="avatar"/>
+        <result column="flag" property="flag"/>
+        <result column="create_time" property="createTime"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <select id="getUserInfo" resultType="com.banner.model.user.dtos.UpdateDto">
+        SELECT u.id,
+               u.avatar,
+               u.user_name,
+               u.create_time,
+               ui.birth,
+               ui.description,
+               ui.gender,
+               ui.school
+        FROM crc_user u
+                 LEFT JOIN crc_user_info ui ON u.id = ui.user_id
+        WHERE u.id = #{id}
+    </select>
+
+</mapper>

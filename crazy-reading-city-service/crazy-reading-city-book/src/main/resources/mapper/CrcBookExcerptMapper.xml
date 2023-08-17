@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.banner.book.mapper.CrcBookExcerptMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.banner.model.book.pojos.CrcBookExcerpt">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="book_id" property="bookId"/>
+        <result column="content" property="content"/>
+        <result column="thoughts" property="thoughts"/>
+        <result column="status" property="status"/>
+        <result column="likes" property="likes"/>
+        <result column="unlike" property="unlike"/>
+        <result column="collect" property="collect"/>
+        <result column="create_time" property="createTime"/>
+    </resultMap>
+
+    <select id="getNameAndAuthor" resultType="com.banner.model.book.dtos.BookSimpleDto">
+        SELECT cbe.title   name,
+               cbe.user_id author_id
+        FROM crc_book_excerpt cbe
+        WHERE cbe.id = #{objId}
+    </select>
+
+    <select id="getBookExcerptList" resultType="com.banner.model.book.dtos.GetBookExcerptDto">
+        SELECT cbe.id,
+               cbe.user_id,
+               cbe.title,
+               cbe.likes,
+               cbe.collect,
+               cbe.publish_time
+        FROM crc_book_excerpt cbe
+        WHERE cbe.book_id = #{bookId}
+          AND cbe.`status` = 3
+    </select>
+
+</mapper>

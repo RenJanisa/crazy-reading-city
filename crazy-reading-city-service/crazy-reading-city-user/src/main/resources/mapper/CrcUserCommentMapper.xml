@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.banner.user.mapper.CrcUserCommentMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.banner.model.user.pojos.CrcUserComment">
+        <id column="id" property="id"/>
+        <result column="obj_id" property="objId"/>
+        <result column="user_id" property="userId"/>
+        <result column="content" property="content"/>
+        <result column="likes" property="likes"/>
+        <result column="unlike" property="unlike"/>
+        <result column="create_time" property="createTime"/>
+    </resultMap>
+
+    <select id="listById" resultType="com.banner.model.user.dtos.GetUserCommentDto">
+        SELECT cuc.*,
+               cu.user_name,
+               cu.avatar
+        FROM crc_user_comment cuc
+                 INNER JOIN crc_user cu ON cuc.user_id = cu.id
+        WHERE cuc.obj_id = #{objId}
+    </select>
+
+</mapper>

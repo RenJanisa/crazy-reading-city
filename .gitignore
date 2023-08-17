@@ -6,6 +6,9 @@ bin-release/
 
 # Other files and folders
 .settings/
+.idea
+**/target
+xxl-job-logs/
 
 # Executables
 *.swf

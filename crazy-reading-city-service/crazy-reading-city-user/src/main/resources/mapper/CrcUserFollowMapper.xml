@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.banner.user.mapper.CrcUserFollowMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.banner.model.user.pojos.CrcUserFollow">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="follow_id" property="followId"/>
+        <result column="create_time" property="createTime"/>
+    </resultMap>
+
+    <select id="getMeTo" resultType="com.banner.model.user.dtos.GetUserFollowDto">
+        SELECT cuf.*,
+               cu.user_name,
+               cu.avatar
+        FROM crc_user_follow cuf
+                 INNER JOIN crc_user cu ON cuf.follow_id = cu.id
+        where cuf.user_id = #{userId}
+    </select>
+
+    <select id="getToMe" resultType="com.banner.model.user.dtos.GetUserFollowDto">
+        SELECT cuf.id,
+               cuf.user_id follow_id,
+               cuf.follow_id user_id,
+               cuf.create_time,
+               cu.user_name,
+               cu.avatar
+        FROM crc_user_follow cuf
+                 INNER JOIN crc_user cu ON cuf.user_id = cu.id
+        where cuf.follow_id= #{userId}
+    </select>
+
+</mapper>

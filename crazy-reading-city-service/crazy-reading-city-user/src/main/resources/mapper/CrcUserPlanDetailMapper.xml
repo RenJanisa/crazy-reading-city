@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.banner.user.mapper.CrcUserPlanDetailMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.banner.model.user.pojos.CrcUserPlanDetail">
+        <id column="id" property="id"/>
+        <result column="plan_id" property="planId"/>
+        <result column="status" property="status"/>
+        <result column="begin_time" property="beginTime"/>
+        <result column="end_time" property="endTime"/>
+        <result column="content" property="content"/>
+        <result column="conclusion" property="conclusion"/>
+    </resultMap>
+
+    <select id="getOutDatePlan" resultType="com.banner.model.user.dtos.PlanOutDateDto">
+        SELECT cup.id,
+               cu.email,
+               cu.user_name,
+               cup.title
+        FROM crc_user_plan cup
+                 INNER JOIN crc_user cu ON cup.user_id = cu.id
+        WHERE cup.id IN (SELECT plan_id
+                         FROM crc_user_plan_detail
+                         WHERE `status` = 0
+                           AND TIMESTAMPDIFF(MINUTE, NOW(), end_time) <![CDATA[ >= ]]> 0
+                           AND TIMESTAMPDIFF(MINUTE, NOW(), end_time) <![CDATA[ <= ]]>30)
+    </select>
+</mapper>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.banner.user.mapper.CrcUserReplyMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.banner.model.user.pojos.CrcUserReply">
+        <id column="id" property="id"/>
+        <result column="comment_id" property="commentId"/>
+        <result column="user_id" property="userId"/>
+        <result column="content" property="content"/>
+        <result column="likes" property="likes"/>
+        <result column="unlike" property="unlike"/>
+        <result column="create_time" property="createTime"/>
+    </resultMap>
+
+    <select id="listById" resultType="com.banner.model.user.dtos.GetUserReplyDto">
+        SELECT cur.*,
+               cu.user_name,
+               cu.avatar
+        FROM crc_user_reply cur
+                 INNER JOIN crc_user cu ON cur.user_id = cu.id
+        WHERE cur.replier_id IS NULL
+          AND cur.comment_id = #{commentId}
+    </select>
+
+    <select id="listPlusById" resultType="com.banner.model.user.dtos.GetUserReplyPlusDto">
+        SELECT cur.*,
+               cu.user_name,
+               cu.avatar,
+               cus.user_name replier_name,
+               cus.avatar    replier_avatar
+        FROM crc_user_reply cur
+                 INNER JOIN crc_user cu ON cur.user_id = cu.id
+                 INNER JOIN crc_user cus ON cur.replier_id = cus.id
+        WHERE cur.comment_id = #{commentId}
+    </select>
+
+</mapper>

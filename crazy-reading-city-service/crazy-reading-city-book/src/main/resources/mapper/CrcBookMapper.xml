@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.banner.book.mapper.CrcBookMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.banner.model.book.pojos.CrcBook">
+        <id column="id" property="id"/>
+        <result column="book_name" property="bookName"/>
+        <result column="author_id" property="authorId"/>
+        <result column="img" property="img"/>
+        <result column="description" property="description"/>
+        <result column="pages" property="pages"/>
+        <result column="catalogue" property="catalogue"/>
+        <result column="intro" property="intro"/>
+    </resultMap>
+
+    <select id="getBookInfo" resultType="com.banner.model.book.dtos.CrcBookInfoDto">
+        SELECT b.*,
+               a.author_name,
+               a.intro author_intro,
+               a.nationality
+        FROM crc_book b
+                 INNER JOIN crc_book_author a
+        WHERE b.id = #{bookId}
+    </select>
+
+    <select id="getNameAndAuthor" resultType="com.banner.model.book.dtos.BookSimpleDto">
+        SELECT cb.book_name    name,
+               cba.author_name author,
+               cba.id          author_id,
+               cba.nationality address
+        FROM crc_book cb
+                 INNER JOIN crc_book_author cba ON cb.author_id = cba.id
+        WHERE cb.id = #{objId}
+    </select>
+
+    <select id="getRecommendBook" resultType="com.banner.model.search.dtos.CrcBookSearchDto">
+        SELECT cb.id,
+               cb.book_name,
+               cb.img
+        FROM crc_book cb
+        ORDER BY cb.collect + (SELECT COUNT(crc_book_excerpt.id)
+                               FROM crc_book_excerpt
+                                        INNER JOIN crc_book ON crc_book.id) * 3 DESC LIMIT 20
+    </select>
+
+</mapper>

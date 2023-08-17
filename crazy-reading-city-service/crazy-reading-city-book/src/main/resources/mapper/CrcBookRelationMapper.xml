@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.banner.book.mapper.CrcBookRelationMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.banner.model.book.pojos.CrcBookRelation">
+        <id column="id" property="id"/>
+        <result column="type_id" property="typeId"/>
+        <result column="book_id" property="bookId"/>
+    </resultMap>
+
+    <select id="getTypeBook" resultType="com.banner.model.search.dtos.CrcBookSearchDto">
+        SELECT cb.id,
+               cb.book_name,
+               cb.img
+        FROM crc_book_relation cbr
+                 INNER JOIN crc_book cb ON cbr.book_id = cb.id
+        WHERE cbr.type_id = #{typeId} LIMIT #{page}
+            , #{pageSize}
+    </select>
+
+</mapper>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="crazy-reading-city-book" />
+        <module name="crazy-reading-city-gateway" />
+        <module name="crazy-reading-city-user" />
+        <module name="crazy-reading-city-feign-api" />
+        <module name="crazy-reading-city-admin" />
+        <module name="crazy-reading-city-search" />
+        <module name="minio-file-starter" />
+        <module name="crazy-reading-city-model" />
+        <module name="crazy-reading-city-common" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="crazy-reading-city-like" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="crazy-reading-city" options="" />
+      <module name="crazy-reading-city-admin" options="-parameters" />
+      <module name="crazy-reading-city-basic" options="" />
+      <module name="crazy-reading-city-book" options="-parameters" />
+      <module name="crazy-reading-city-common" options="-parameters" />
+      <module name="crazy-reading-city-feign-api" options="-parameters" />
+      <module name="crazy-reading-city-gateway" options="-parameters" />
+      <module name="crazy-reading-city-like" options="-parameters" />
+      <module name="crazy-reading-city-model" options="-parameters" />
+      <module name="crazy-reading-city-search" options="-parameters" />
+      <module name="crazy-reading-city-service" options="" />
+      <module name="crazy-reading-city-user" options="-parameters" />
+      <module name="minio-file-starter" options="-parameters" />
+    </option>
+  </component>
+</project>
