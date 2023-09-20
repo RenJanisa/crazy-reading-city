@@ -15,7 +15,7 @@
     </resultMap>
 
     <!-- 通用查询结果列 -->
-    <select id="getUserInfo" resultType="com.banner.model.user.dtos.UpdateDto">
+    <select id="getUserInfo" resultType="com.banner.model.user.dtos.UserUpdateDto">
         SELECT u.id,
                u.avatar,
                u.user_name,
@@ -27,6 +27,38 @@
         FROM crc_user u
                  LEFT JOIN crc_user_info ui ON u.id = ui.user_id
         WHERE u.id = #{id}
+    </select>
+
+    <select id="listUser" resultType="com.banner.model.admin.dtos.AdminUserListDto">
+        SELECT u.id,
+               u.user_name,
+               u.email,
+               ui.gender,
+               ui.school,
+               (SELECT COUNT(*) FROM crc_user_plan cup WHERE cup.user_id = u.id) plan_count,
+               ui.birth,
+               u.create_time
+        FROM crc_user u
+                 LEFT JOIN crc_user_info ui ON u.id = ui.user_id
+        WHERE u.flag = 1
+            LIMIT #{page}
+            , #{pageSize}
+    </select>
+
+    <select id="listUserByName" resultType="com.banner.model.admin.dtos.AdminUserListDto">
+        SELECT u.id,
+               u.user_name,
+               u.email,
+               ui.gender,
+               ui.school,
+               (SELECT COUNT(*) FROM crc_user_plan cup WHERE cup.user_id = u.id) plan_count,
+               ui.birth,
+               u.create_time
+        FROM crc_user u
+                 LEFT JOIN crc_user_info ui ON u.id = ui.user_id
+        WHERE u.flag = 1
+          AND u.user_name LIKE #{userName}
+        LIMIT #{page}, #{pageSize}
     </select>
 
 </mapper>

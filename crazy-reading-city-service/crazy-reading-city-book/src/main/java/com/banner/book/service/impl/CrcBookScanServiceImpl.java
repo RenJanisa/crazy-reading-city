@@ -44,18 +44,18 @@ public class CrcBookScanServiceImpl implements CrcBookScanService {
         }
 
         //从内容中提取纯文本内容
-        Map<String, String> text = handleText(crcBookExcerpt.getContent(),crcBookExcerpt.getThoughts());
+        Map<String, String> text = handleText(crcBookExcerpt.getContent(), crcBookExcerpt.getThoughts());
 
         //审核文本内容
-        boolean isSensitive = handleSensitiveScan(text);
-        if (isSensitive) {
+
+        if (text == null || handleSensitiveScan(text)) {
             //存在敏感词,修改状态
-            crcBookExcerptMapper.updateStatus(id,EXCERPT_PUBLIC_PROBLEM);
+            crcBookExcerptMapper.updateStatus(id, EXCERPT_PUBLIC_PROBLEM);
             return;
         }
 
         //审核通过,修改状态
-        crcBookExcerptMapper.updateStatus(id,EXCERPT_PUBLIC_OK);
+        crcBookExcerptMapper.updateStatus(id, EXCERPT_PUBLIC_OK);
 
     }
 
@@ -85,7 +85,7 @@ public class CrcBookScanServiceImpl implements CrcBookScanService {
     }
 
     //提取文本内容
-    private Map<String, String> handleText(String content,String thoughts) {
+    private Map<String, String> handleText(String content, String thoughts) {
         //存储纯文本内容
         StringBuilder stringBuilder = new StringBuilder();
         //从自媒体文章的内容中提取文本
@@ -95,7 +95,7 @@ public class CrcBookScanServiceImpl implements CrcBookScanService {
         }
 
         List<Map> maps = JSONUtil.toList(content, Map.class);
-        maps.addAll(JSONUtil.toList(thoughts,Map.class));
+        maps.addAll(JSONUtil.toList(thoughts, Map.class));
 
         for (Map map : maps) {
             if (map.get("type").equals("text")) {

@@ -21,4 +21,7 @@ public interface CrcUserPlanDetailMapper extends BaseMapper<CrcUserPlanDetail> {
     List<Integer> getPlanDetailOrders(Long planId);
 
     List<PlanOutDateDto> getOutDatePlan();
+
+    @Select("SELECT COUNT(*) FROM crc_user_plan_detail WHERE plan_id = #{objId} AND `status` = 0")
+    int countPlanDetailStatus(String objId);
 }

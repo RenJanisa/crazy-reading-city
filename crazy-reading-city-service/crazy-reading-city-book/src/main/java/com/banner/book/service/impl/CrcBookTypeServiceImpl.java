@@ -2,20 +2,17 @@ package com.banner.book.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
-import com.banner.book.mapper.CrcBookMapper;
 import com.banner.book.mapper.CrcBookRelationMapper;
 import com.banner.book.service.CrcBookService;
+import com.banner.model.common.dtos.PageDto;
 import com.banner.model.book.dtos.GetBookTypeDto;
-import com.banner.model.book.dtos.TypeBookDto;
 import com.banner.model.book.pojos.CrcBookRelation;
 import com.banner.model.book.pojos.CrcBookType;
 import com.banner.book.mapper.CrcBookTypeMapper;
 import com.banner.book.service.CrcBookTypeService;
 import com.banner.model.common.dtos.PageResponseResult;
 import com.banner.model.common.dtos.ResponseResult;
-import com.banner.model.common.enums.AppHttpCodeEnum;
 import com.banner.model.search.dtos.CrcBookSearchDto;
-import com.banner.model.search.dtos.GetBookSearchDto;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
@@ -58,14 +55,14 @@ public class CrcBookTypeServiceImpl extends ServiceImpl<CrcBookTypeMapper, CrcBo
     private CrcBookService crcBookService;
 
     @Override
-    public ResponseResult getTypeBook(TypeBookDto typeBookDto) {
+    public ResponseResult getTypeBook(PageDto typeBookDto) {
 
-        String typeId = typeBookDto.getTypeId();
+        String typeId = typeBookDto.getCondition();
         Integer pageSize = typeBookDto.getPageSize();
         int page = (typeBookDto.getPage() - 1) * pageSize;
         List<CrcBookSearchDto> crcBookSearchDtos;
-        Integer total = 0 ;
-        if (typeId != null){
+        Integer total;
+        if (StrUtil.isNotBlank(typeId)){
             //分页查询该类型下书籍
             crcBookSearchDtos = crcBookRelationMapper.getTypeBook(typeId,page,pageSize);
             total = crcBookRelationMapper.selectCount(Wrappers.<CrcBookRelation>lambdaQuery()
@@ -73,6 +70,7 @@ public class CrcBookTypeServiceImpl extends ServiceImpl<CrcBookTypeMapper, CrcBo
         }else {
             //查询全部,推荐20本热门图书
             crcBookSearchDtos = crcBookService.getRecommendBook();
+            total = crcBookSearchDtos.size();
         }
         PageResponseResult pageResponseResult = new PageResponseResult(typeBookDto.getPage(),pageSize,total);
         pageResponseResult.setData(crcBookSearchDtos);

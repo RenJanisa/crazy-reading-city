@@ -1,5 +1,6 @@
 package com.banner.admin.mapper;
 
+import com.banner.model.admin.dtos.AdminBookListDto;
 import com.banner.model.book.dtos.BookSimpleDto;
 import com.banner.model.book.dtos.CrcBookInfoDto;
 import com.banner.model.book.pojos.CrcBook;
@@ -22,4 +23,11 @@ import java.util.List;
 public interface CrcBookMapper extends BaseMapper<CrcBook> {
 
 
+    @Select("SELECT cb.id,cb.book_name,cb.img,cb.collect,cb.pages,cb.intro,cb.publish_time,cb.author_id,cba.author_name FROM crc_book cb Inner Join crc_book_author cba on cb.author_id=cba.id WHERE book_name like #{bookName} LIMIT #{page},#{pageSize}")
+    List<AdminBookListDto> listBookByName(@Param("bookName") String bookName,
+                                    @Param("page") int page,
+                                    @Param("pageSize") Integer pageSize);
+
+    @Select("SELECT cb.id,cb.book_name,cb.img,cb.collect,cb.pages,cb.intro,cb.publish_time,cb.author_id,cba.author_name FROM crc_book cb Inner Join crc_book_author cba on cb.author_id=cba.id LIMIT #{page},#{pageSize}")
+    List<AdminBookListDto> listBook(int page, Integer pageSize);
 }

@@ -1,24 +1,19 @@
 package com.banner.user.controller;
 
 
-import com.banner.common.utils.AppJwtUtil;
 import com.banner.common.utils.ThreadLocalUtil;
 import com.banner.model.common.dtos.ResponseResult;
 import com.banner.model.user.dtos.EnrollDto;
 import com.banner.model.user.dtos.LoginDto;
-import com.banner.model.user.dtos.UpdateDto;
-import com.banner.model.user.pojos.CrcUser;
+import com.banner.model.user.dtos.UserUpdateDto;
 import com.banner.user.service.CrcUserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.http.HttpHeaders;
-import org.apache.ibatis.annotations.Delete;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * <p>
@@ -48,8 +43,8 @@ public class CrcUserController {
         return crcUserService.sendCode(email);
     }
 
-    @PostMapping("/enroll")
     @ApiOperation("用户注册")
+    @PostMapping("/enroll")
     public ResponseResult enroll(@RequestBody @Validated EnrollDto enrollDto){
         return crcUserService.enroll(enrollDto);
     }
@@ -61,10 +56,9 @@ public class CrcUserController {
     }
 
     @ApiOperation("用户更新")
-    @PostMapping("/update")
-    public ResponseResult update(@RequestBody @Validated UpdateDto updateDto){
-
-        return crcUserService.updateInfo(updateDto);
+    @PutMapping("/update")
+    public ResponseResult update(@RequestBody @Validated UserUpdateDto userUpdateDto){
+        return crcUserService.updateInfo(userUpdateDto);
     }
 
     @ApiOperation("用户注销")

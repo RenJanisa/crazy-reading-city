@@ -2,8 +2,7 @@ package com.banner.book.controller;
 
 
 import com.banner.book.service.CrcBookTypeService;
-import com.banner.model.book.dtos.TypeBookDto;
-import com.banner.model.book.pojos.CrcBookType;
+import com.banner.model.common.dtos.PageDto;
 import com.banner.model.common.dtos.ResponseResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -36,8 +35,7 @@ public class CrcBookTypeController {
 
     @ApiOperation("查询类型所含书籍")
     @PostMapping("/get/book")
-    public ResponseResult getTypeBook(@RequestBody @Validated TypeBookDto typeBookDto){
-
+    public ResponseResult getTypeBook(@RequestBody @Validated PageDto typeBookDto){
         return crcBookTypeService.getTypeBook(typeBookDto);
     }
 

@@ -4,6 +4,8 @@ import com.banner.model.book.pojos.CrcBook;
 import com.banner.model.book.pojos.CrcBookAuthor;
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * @author rjj
  * @date 2023/7/27 - 17:36
@@ -25,5 +27,7 @@ public class CrcBookInfoDto extends CrcBook {
      * 作者简介
      */
     private String authorIntro;
+
+   private List<BookTypesSimpleDto> bookTypes;
 
 }

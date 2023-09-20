@@ -20,4 +20,5 @@ public class RedisConstants {
     public final static String BOOK_TALK_KEY="book:talk:";
     public final static String BOOK_PLAN_KEY="book:plan:";
     public final static String BOOK_RECOMMEND_KEY="book:recommend";
+    public final static String EXCERPT_PUBLISH_KEY="excerpt:publish";
 }

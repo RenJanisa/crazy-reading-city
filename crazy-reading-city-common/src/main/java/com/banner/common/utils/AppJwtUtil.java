@@ -9,9 +9,9 @@ import java.util.*;
 public class AppJwtUtil {
 
     // TOKEN的有效期一小时（S）
-    private static final int TOKEN_TIME_OUT = 3_600;
+    private static final int TOKEN_TIME_OUT = 3_600*12;
     // 加密KEY
-    private static final String TOKEN_ENCRY_KEY = "CopyrightBelongsToBanner123";
+    private static final String TOKEN_ENCRY_KEY = "@CopyrightByBanner";
     // 最小刷新间隔(S)
     private static final int REFRESH_TIME = 60_000;
 

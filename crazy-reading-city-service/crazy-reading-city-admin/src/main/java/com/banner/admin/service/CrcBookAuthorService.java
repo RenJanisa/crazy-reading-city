@@ -1,5 +1,6 @@
 package com.banner.admin.service;
 
+import com.banner.model.common.dtos.PageDto;
 import com.banner.model.book.pojos.CrcBookAuthor;
 import com.banner.model.common.dtos.ResponseResult;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -15,4 +16,10 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface CrcBookAuthorService extends IService<CrcBookAuthor> {
 
     ResponseResult addAuthor(CrcBookAuthor crcBookAuthor);
+
+    ResponseResult updateAuthor(CrcBookAuthor crcBookAuthor);
+
+    ResponseResult listAuthor(PageDto authorPage);
+
+    ResponseResult delAuthor(String authorIds);
 }

@@ -6,8 +6,10 @@ import com.banner.model.book.pojos.CrcBookExcerpt;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import io.swagger.models.auth.In;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -32,4 +34,7 @@ public interface CrcBookExcerptMapper extends BaseMapper<CrcBookExcerpt> {
 
     @Update("update crc_book_excerpt set likes = likes+#{count} where id = #{excerptId}")
     void updateLikes(@Param("excerptId") String excerptId, @Param("count") int count);
+
+    @Select("SELECT id FROM crc_book_excerpt WHERE (status = 0 AND publish_time < #{time})")
+    List<String> getExcerptTaskIds(Date time);
 }

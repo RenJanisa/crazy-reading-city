@@ -6,14 +6,18 @@ import com.banner.apis.user.IUserClient;
 import com.banner.book.mapper.BookMessageMapper;
 import com.banner.book.mapper.CrcBookExcerptMapper;
 import com.banner.book.mapper.CrcBookMapper;
+import com.banner.book.mapper.CrcBookRelationMapper;
 import com.banner.book.service.CrcBookService;
 import com.banner.model.book.dtos.*;
 import com.banner.model.book.pojos.CrcBook;
 import com.banner.model.book.pojos.Message;
+import com.banner.model.common.dtos.PageDto;
+import com.banner.model.common.dtos.PageResponseResult;
 import com.banner.model.common.dtos.ResponseResult;
 import com.banner.model.common.enums.AppHttpCodeEnum;
 import com.banner.model.search.dtos.CrcBookSearchDto;
 import com.banner.model.user.dtos.SimpleUserDto;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -38,6 +42,8 @@ public class CrcBookServiceImpl extends ServiceImpl<CrcBookMapper, CrcBook> impl
 
     @Resource
     private CrcBookMapper crcBookMapper;
+    @Resource
+    private CrcBookRelationMapper crcBookRelationMapper;
 
     @Override
     public ResponseResult getInfo(String bookId) {
@@ -47,6 +53,8 @@ public class CrcBookServiceImpl extends ServiceImpl<CrcBookMapper, CrcBook> impl
         }
 
         CrcBookInfoDto crcBookInfoDto = crcBookMapper.getBookInfo(bookId);
+
+        crcBookInfoDto.setBookTypes(crcBookRelationMapper.getBookTypes(bookId));
 
         if (crcBookInfoDto == null) {
             return ResponseResult.errorResult(AppHttpCodeEnum.DATA_NOT_EXIST);
@@ -81,7 +89,7 @@ public class CrcBookServiceImpl extends ServiceImpl<CrcBookMapper, CrcBook> impl
     private BookMessageMapper bookMessageMapper;
 
     @Override
-    public ResponseResult getBookMessge(GetBookMessageDto getBookMessageDto) {
+    public ResponseResult getBookMessage(GetBookMessageDto getBookMessageDto) {
 
         if (getBookMessageDto.getPage() == null) getBookMessageDto.setPage(1);
         if (getBookMessageDto.getRows() == null) getBookMessageDto.setRows(10);
@@ -116,9 +124,33 @@ public class CrcBookServiceImpl extends ServiceImpl<CrcBookMapper, CrcBook> impl
             //查询数据库
             crcBookSearchDtos = crcBookMapper.getRecommendBook();
             stringRedisTemplate.opsForValue().set(BOOK_RECOMMEND_KEY,JSONUtil.toJsonStr(crcBookSearchDtos),1L, TimeUnit.DAYS);
+            return crcBookSearchDtos;
         }
         crcBookSearchDtos = JSONUtil.toList(bookJson, CrcBookSearchDto.class);
-
         return crcBookSearchDtos;
     }
+
+    /**
+     * 获取该作者所有书籍
+     * @param authorBook
+     * @return
+     */
+    @Override
+    public ResponseResult getAuthorBook(PageDto authorBook) {
+
+        String authorId = authorBook.getCondition();
+        Integer page = (authorBook.getPage() - 1) * authorBook.getPageSize();
+        Integer pageSize = authorBook.getPageSize();
+
+        List<CrcBookSearchDto> searchDtos = crcBookMapper.getAuthorBook(authorId,page,pageSize);
+
+        Integer total = crcBookMapper.selectCount(Wrappers.<CrcBook>lambdaQuery()
+                .select(CrcBook::getId).eq(CrcBook::getAuthorId,authorId));
+
+        PageResponseResult pageResponseResult = new PageResponseResult(authorBook.getPage(),pageSize,total);
+        pageResponseResult.setData(searchDtos);
+
+        return pageResponseResult;
+    }
+
 }

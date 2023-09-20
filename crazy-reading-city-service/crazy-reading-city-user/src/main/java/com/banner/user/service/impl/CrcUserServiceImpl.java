@@ -5,15 +5,19 @@ import cn.hutool.core.lang.UUID;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.digest.DigestUtil;
+import cn.hutool.json.JSONUtil;
 import com.banner.common.utils.AppJwtUtil;
 import com.banner.common.utils.ThreadLocalUtil;
+import com.banner.model.admin.dtos.AdminUserListDto;
+import com.banner.model.admin.dtos.BookAuthorListDto;
+import com.banner.model.common.dtos.PageDto;
 import com.banner.model.common.dtos.PageResponseResult;
 import com.banner.model.common.dtos.ResponseResult;
 import com.banner.model.common.enums.AppHttpCodeEnum;
 import com.banner.model.user.dtos.EnrollDto;
 import com.banner.model.user.dtos.LoginDto;
 import com.banner.model.user.dtos.SimpleUserDto;
-import com.banner.model.user.dtos.UpdateDto;
+import com.banner.model.user.dtos.UserUpdateDto;
 import com.banner.model.user.pojos.CrcUser;
 import com.banner.model.user.pojos.CrcUserInfo;
 import com.banner.user.mapper.CrcUserInfoMapper;
@@ -36,6 +40,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import static com.banner.common.constants.RedisConstants.ENROLL_CODE_KEY;
@@ -75,7 +82,7 @@ public class CrcUserServiceImpl extends ServiceImpl<CrcUserMapper, CrcUser> impl
             return ResponseResult.errorResult(AppHttpCodeEnum.LOGIN_PASSWORD_ERROR);
         }
         //登录成功 生成jwt
-        String token = AppJwtUtil.getToken(one.getId(),one.getFlag());
+        String token = AppJwtUtil.getToken(one.getId(), one.getFlag());
 
         return ResponseResult.okResult(token);
     }
@@ -87,7 +94,7 @@ public class CrcUserServiceImpl extends ServiceImpl<CrcUserMapper, CrcUser> impl
 
     @Async //异步执行
     @Override
-    public void sendEmail(String email,String content) {
+    public void sendEmail(String email, String content) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom(from + "(疯狂读书城)");
         message.setTo(email);
@@ -108,8 +115,8 @@ public class CrcUserServiceImpl extends ServiceImpl<CrcUserMapper, CrcUser> impl
         //生成验证码
         String code = RandomUtil.randomNumbers(6);
         //发送邮件
-        String content = String.format("验证码：%s，请勿将验证码发给他人!感谢您的使用!",code);
-        applicationContext.getBean(CrcUserService.class).sendEmail(email,content);
+        String content = String.format("验证码：%s，请勿将验证码发给他人!感谢您的使用!", code);
+        applicationContext.getBean(CrcUserService.class).sendEmail(email, content);
 
         log.info("已发送");
 
@@ -150,24 +157,23 @@ public class CrcUserServiceImpl extends ServiceImpl<CrcUserMapper, CrcUser> impl
 
     @Override
     @Transactional
-    public ResponseResult updateInfo(UpdateDto updateDto) {
+    public ResponseResult updateInfo(UserUpdateDto userUpdateDto) {
 
-        if (updateDto.getId() == null) updateDto.setId(ThreadLocalUtil.getId());
-        CrcUser crcUser = BeanUtil.copyProperties(updateDto, CrcUser.class);
+        if (userUpdateDto.getId() == null) userUpdateDto.setId(ThreadLocalUtil.getId());
+        CrcUser crcUser = BeanUtil.copyProperties(userUpdateDto, CrcUser.class);
         //更新用户表
         this.updateById(crcUser);
 
         //更新用户信息表
-        CrcUserInfo crcUserInfo = BeanUtil.copyProperties(updateDto, CrcUserInfo.class);
-        crcUserInfo.setUserId(updateDto.getId());
+        CrcUserInfo crcUserInfo = BeanUtil.copyProperties(userUpdateDto, CrcUserInfo.class);
+        crcUserInfo.setUserId(userUpdateDto.getId());
         crcUserInfo.setId(null);
         //查询是否存在
         Integer count = crcUserInfoMapper.selectCount(Wrappers.<CrcUserInfo>lambdaQuery()
                 .select(CrcUserInfo::getId)
-                .eq(CrcUserInfo::getUserId, updateDto.getId()));
+                .eq(CrcUserInfo::getUserId, userUpdateDto.getId()));
 
         int r;
-
         if (count > 0) {
             //存在更新原数据
             r = crcUserInfoMapper.update(crcUserInfo, Wrappers.<CrcUserInfo>lambdaUpdate()
@@ -183,11 +189,11 @@ public class CrcUserServiceImpl extends ServiceImpl<CrcUserMapper, CrcUser> impl
 
     @Override
     public ResponseResult get(Long userId) {
-        if (userId == null) userId=ThreadLocalUtil.getId();
+        if (userId == null) userId = ThreadLocalUtil.getId();
 
-        UpdateDto updateDto = crcUserMapper.getUserInfo(userId);
+        UserUpdateDto userUpdateDto = crcUserMapper.getUserInfo(userId);
 
-        return  updateDto != null ? PageResponseResult.okResult(updateDto)
+        return userUpdateDto != null ? PageResponseResult.okResult(userUpdateDto)
                 : PageResponseResult.errorResult(AppHttpCodeEnum.DATA_NOT_EXIST);
     }
 
@@ -201,12 +207,11 @@ public class CrcUserServiceImpl extends ServiceImpl<CrcUserMapper, CrcUser> impl
     @Resource
     private FileStorageService fileStorageService;
 
-
     @Override
     public ResponseResult uploadImg(MultipartFile multipartFile) {
 
         //1.检查参数
-        if(multipartFile == null || multipartFile.getSize() == 0){
+        if (multipartFile == null || multipartFile.getSize() == 0) {
             return ResponseResult.errorResult(AppHttpCodeEnum.PARAM_INVALID);
         }
 
@@ -218,14 +223,39 @@ public class CrcUserServiceImpl extends ServiceImpl<CrcUserMapper, CrcUser> impl
         String fileId = null;
         try {
             fileId = fileStorageService.uploadImgFile("", fileName + postfix, multipartFile.getInputStream());
-            log.info("上传图片到MinIO中，fileId:{}",fileId);
+            log.info("上传图片到MinIO中，fileId:{}", fileId);
         } catch (IOException e) {
             e.printStackTrace();
             log.error("上传文件失败");
-            return ResponseResult.errorResult(500,"上传文件失败");
+            return ResponseResult.errorResult(500, "上传文件失败");
         }
 
         return ResponseResult.okResult(fileId);
+    }
+
+    @Override
+    public Map getUserList(PageDto pageDto) {
+
+        Integer pageSize = pageDto.getPageSize();
+        int page = (pageDto.getPage() - 1) * pageSize;
+
+        String condition = pageDto.getCondition();
+        Map map = new HashMap();
+        List<AdminUserListDto> adminUserListDtos;
+        if (StrUtil.isBlank(condition)) {
+            //无条件
+            adminUserListDtos = crcUserMapper.listUser(page, pageSize);
+            map.put("total",crcUserMapper.selectCount(Wrappers.<CrcUser>lambdaQuery().eq(CrcUser::getFlag,1)));
+            map.put("adminUserListDtos", JSONUtil.toJsonStr(adminUserListDtos));
+            return map;
+        }
+        String userName = "%" + condition + "%";
+        adminUserListDtos = crcUserMapper.listUserByName(userName, page, pageSize);
+        map.put("total",crcUserMapper.selectCount(Wrappers.<CrcUser>lambdaQuery()
+                .eq(CrcUser::getFlag,1)
+                .like(CrcUser::getUserName,userName)));
+        map.put("adminUserListDtos", JSONUtil.toJsonStr(adminUserListDtos));
+        return map;
     }
 }
 

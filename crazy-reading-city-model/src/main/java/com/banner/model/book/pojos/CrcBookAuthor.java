@@ -25,7 +25,7 @@ public class CrcBookAuthor implements Serializable {
     /**
      * id
      */
-    @ApiModelProperty(hidden = true)
+    @ApiModelProperty(value = "添加作者时为空")
     private Long id;
 
     /**

@@ -43,6 +43,7 @@ public class CrcBookController {
         return ResponseResult.okResult(crcBookSearchDto);
     }
 
+
     @ApiOperation(value = "查询书籍摘录")
     @GetMapping("/excerpt")
     public ResponseResult getBookExcerpt(String bookId){
@@ -50,10 +51,10 @@ public class CrcBookController {
     }
 
 
-    @ApiOperation("查看聊天室消息")
+    @ApiOperation(value = "查看聊天室消息")
     @PostMapping("/message")
     public ResponseResult getBookMsg(@RequestBody @Validated GetBookMessageDto getBookMessageDto){
-        return crcBookService.getBookMessge(getBookMessageDto);
+        return crcBookService.getBookMessage(getBookMessageDto);
     }
 
 

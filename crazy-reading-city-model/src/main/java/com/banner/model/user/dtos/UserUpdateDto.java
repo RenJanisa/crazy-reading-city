@@ -1,20 +1,16 @@
 package com.banner.model.user.dtos;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 /**
  * @author rjj
  * @date 2023/7/31 - 9:53
  */
 @Data
-public class UpdateDto {
+public class UserUpdateDto {
 
     private Long id;
 
@@ -48,8 +44,6 @@ public class UpdateDto {
      */
     private String description;
 
-
-    private LocalDateTime createTime;
 
 
 }

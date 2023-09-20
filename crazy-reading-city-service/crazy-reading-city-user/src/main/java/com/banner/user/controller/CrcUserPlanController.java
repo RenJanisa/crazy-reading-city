@@ -1,13 +1,14 @@
 package com.banner.user.controller;
 
 import com.banner.common.utils.ThreadLocalUtil;
+import com.banner.model.common.dtos.PageDto;
 import com.banner.model.common.dtos.ResponseResult;
+import com.banner.model.user.dtos.PlanConclusionDto;
 import com.banner.model.user.pojos.CrcUserPlan;
 import com.banner.user.service.CrcUserPlanService;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.ibatis.annotations.ResultMap;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -39,6 +40,20 @@ public class CrcUserPlanController {
         boolean save = crcUserPlanService.save(crcUserPlan);
         return save? ResponseResult.okResult(planId)
                 :ResponseResult.errorResult(500,"添加失败");
+    }
+
+    @ApiOperation("添加计划总结")
+    @PostMapping("/add-conclusion")
+    public ResponseResult addPlanConclusion(@RequestBody @Validated PlanConclusionDto planConclusionDto){
+        return crcUserPlanService.addPlanConclusion(planConclusionDto);
+    }
+
+
+
+    @ApiOperation("查看计划列表")
+    @PostMapping("/get-list")
+    public ResponseResult getPlans(@RequestBody @Validated PageDto bookPlanPageDto){
+        return crcUserPlanService.getPlans(bookPlanPageDto);
     }
 
 

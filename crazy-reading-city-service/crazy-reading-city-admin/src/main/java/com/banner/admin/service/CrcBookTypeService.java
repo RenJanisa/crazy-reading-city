@@ -1,6 +1,5 @@
 package com.banner.admin.service;
 
-import com.banner.model.book.dtos.TypeBookDto;
 import com.banner.model.book.pojos.CrcBookType;
 import com.banner.model.common.dtos.ResponseResult;
 import com.baomidou.mybatisplus.extension.service.IService;

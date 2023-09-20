@@ -1,6 +1,8 @@
 package com.banner.model.book.pojos;
 
 import java.io.Serializable;
+
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -13,6 +15,7 @@ import lombok.EqualsAndHashCode;
  * @since 2023-07-31
  */
 @Data
+@Builder
 @EqualsAndHashCode(callSuper = false)
 public class CrcBookRelation implements Serializable {
 

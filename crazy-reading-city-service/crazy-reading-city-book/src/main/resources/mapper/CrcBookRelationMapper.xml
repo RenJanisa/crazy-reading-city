@@ -15,8 +15,20 @@
                cb.img
         FROM crc_book_relation cbr
                  INNER JOIN crc_book cb ON cbr.book_id = cb.id
-        WHERE cbr.type_id = #{typeId} LIMIT #{page}
+        WHERE cbr.type_id IN (SELECT id
+                              FROM crc_book_type
+                              WHERE parent_id = #{typeId})
+           OR cbr.type_id = #{typeId} LIMIT #{page}
             , #{pageSize}
+    </select>
+
+    <select id="getBookTypes" resultType="com.banner.model.book.dtos.BookTypesSimpleDto">
+        SELECT t.id type_id,
+               t.type_name
+        FROM crc_book_type t
+        WHERE t.id IN (SELECT type_id
+                       FROM crc_book_relation
+                       WHERE book_id = #{bookId})
     </select>
 
 </mapper>

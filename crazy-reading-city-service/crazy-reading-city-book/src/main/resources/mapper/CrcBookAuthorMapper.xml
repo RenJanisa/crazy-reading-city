@@ -4,15 +4,17 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.banner.model.book.pojos.CrcBookAuthor">
-        <id column="id" property="id" />
-        <result column="author_name" property="authorName" />
-        <result column="nationality" property="nationality" />
-        <result column="into" property="into" />
+        <id column="id" property="id"/>
+        <result column="author_name" property="authorName"/>
+        <result column="nationality" property="nationality"/>
+        <result column="intro" property="intro"/>
     </resultMap>
 
-    <!-- 通用查询结果列 -->
-    <sql id="Base_Column_List">
-        id, author_name, nationality, into
-    </sql>
+    <select id="getBookAuthorListByCondition" resultType="com.banner.model.search.dtos.CrcBookAuthorSearchDto">
+        select id, author_name, nationality
+        from crc_book_author
+        where nationality = #{nationality} limit #{page}
+            , #{pageSize}
+    </select>
 
 </mapper>

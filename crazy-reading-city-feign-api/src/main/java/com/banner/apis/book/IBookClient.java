@@ -1,6 +1,8 @@
 package com.banner.apis.book;
 
 import com.banner.model.book.dtos.BookSimpleDto;
+import com.banner.model.book.pojos.CrcBookAuthor;
+import com.banner.model.search.dtos.CrcBookAuthorSearchDto;
 import com.banner.model.search.dtos.CrcBookSearchDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,4 +25,7 @@ public interface IBookClient {
 
     @GetMapping("/get-book-simple/{bookId}")
     BookSimpleDto getBookSimple(@PathVariable("bookId") Long bookId);
+
+    @GetMapping("/get-book-author-list")
+    List<CrcBookAuthorSearchDto> getBookAuthorSearchList();
 }

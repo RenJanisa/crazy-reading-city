@@ -39,9 +39,7 @@ public class BookMessageMapper {
     public List<Message> getMessages(GetBookMessageDto getBookMessageDto) {
 
         //条件一:用户A发送给用户B的条件
-        Criteria criteriaFrom = new Criteria().andOperator(
-                Criteria.where("bookId").is(getBookMessageDto.getBookId())
-        );
+        Criteria criteriaFrom = Criteria.where("bookId").is(getBookMessageDto.getBookId());
 
         PageRequest pageRequest = PageRequest.of(getBookMessageDto.getPage() - 1
                 , getBookMessageDto.getRows()

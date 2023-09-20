@@ -3,8 +3,7 @@ package com.banner.model.user.pojos;
 import java.io.Serializable;
 
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -18,6 +17,9 @@ import javax.validation.constraints.Size;
  * @since 2023-08-11
  */
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 public class CrcUserPlan implements Serializable {
 

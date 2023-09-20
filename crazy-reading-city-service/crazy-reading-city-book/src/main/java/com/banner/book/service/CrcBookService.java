@@ -1,5 +1,6 @@
 package com.banner.book.service;
 
+import com.banner.model.common.dtos.PageDto;
 import com.banner.model.book.dtos.BookSimpleDto;
 import com.banner.model.book.dtos.GetBookMessageDto;
 import com.banner.model.book.pojos.CrcBook;
@@ -23,11 +24,13 @@ public interface CrcBookService extends IService<CrcBook> {
 
     ResponseResult getBookExcerpt(String bookId);
 
-    ResponseResult getBookMessge(GetBookMessageDto getBookMessageDto);
+    ResponseResult getBookMessage(GetBookMessageDto getBookMessageDto);
 
     List<CrcBookSearchDto> getBookSearchList();
 
     BookSimpleDto getBookSimple(Long bookId);
 
     List<CrcBookSearchDto> getRecommendBook();
+
+    ResponseResult getAuthorBook(PageDto authorBook);
 }

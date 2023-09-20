@@ -52,8 +52,8 @@ public class CrcUserCommentServiceImpl extends ServiceImpl<CrcUserCommentMapper,
 
         boolean save = this.save(crcUserComment);
 
-        return save ? PageResponseResult.okResult(200, "发布成功")
-                : PageResponseResult.errorResult(500, "发布失败");
+        return save ? ResponseResult.okResult(200, "发布成功")
+                : ResponseResult.errorResult(500, "发布失败");
     }
 
     @Resource

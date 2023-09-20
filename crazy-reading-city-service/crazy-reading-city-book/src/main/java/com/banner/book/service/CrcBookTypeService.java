@@ -1,6 +1,6 @@
 package com.banner.book.service;
 
-import com.banner.model.book.dtos.TypeBookDto;
+import com.banner.model.common.dtos.PageDto;
 import com.banner.model.book.pojos.CrcBookType;
 import com.banner.model.common.dtos.ResponseResult;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -18,5 +18,5 @@ public interface CrcBookTypeService extends IService<CrcBookType> {
 
     ResponseResult getType(String typeId);
 
-    ResponseResult getTypeBook(TypeBookDto typeBookDto);
+    ResponseResult getTypeBook(PageDto typeBookDto);
 }

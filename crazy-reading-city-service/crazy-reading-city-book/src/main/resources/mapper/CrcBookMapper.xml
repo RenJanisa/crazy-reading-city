@@ -20,7 +20,7 @@
                a.intro author_intro,
                a.nationality
         FROM crc_book b
-                 INNER JOIN crc_book_author a
+                 INNER JOIN crc_book_author a on b.author_id = a.id
         WHERE b.id = #{bookId}
     </select>
 
@@ -42,6 +42,15 @@
         ORDER BY cb.collect + (SELECT COUNT(crc_book_excerpt.id)
                                FROM crc_book_excerpt
                                         INNER JOIN crc_book ON crc_book.id) * 3 DESC LIMIT 20
+    </select>
+
+    <select id="getAuthorBook" resultType="com.banner.model.search.dtos.CrcBookSearchDto">
+        SELECT cb.id,
+               cb.book_name,
+               cb.img
+        FROM crc_book cb
+        where cb.author_id = #{authorId} limit #{page}
+            , #{pageSize}
     </select>
 
 </mapper>

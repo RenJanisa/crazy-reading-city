@@ -14,6 +14,7 @@ import com.banner.model.common.dtos.PageResponseResult;
 import com.banner.model.common.dtos.ResponseResult;
 import com.banner.model.common.enums.AppHttpCodeEnum;
 import com.banner.model.user.pojos.CrcUserComment;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -28,9 +29,7 @@ import javax.annotation.Resource;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import static com.banner.book.utils.BookExcerptConstants.EXCERPT_PUBLIC_NOT;
@@ -69,17 +68,38 @@ public class CrcBookExcerptServiceImpl extends ServiceImpl<CrcBookExcerptMapper,
             return PageResponseResult.errorResult(500, "书籍不存在");
         }
 
-        if (crcBookExcerpt.getStatus().equals(EXCERPT_PUBLIC_NOT)) {
-            //公开未审核,去审核
+        if (crcBookExcerpt.getStatus().equals(EXCERPT_PUBLIC_NOT)
+                && crcBookExcerpt.getPublishTime().isBefore(LocalDateTime.now())) {
+            //公开未审核且发布时间在现在之前,去审核
             crcBookScanService.scanBook(crcBookExcerpt.getId());
         }
         //草稿或私密,不做处理
-
-        return ResponseResult.okResult(200, "发布成功");
+        return ResponseResult.okResult(200, "添加成功");
     }
-
     @Resource
     private StringRedisTemplate stringRedisTemplate;
+
+    @XxlJob("crcExcerptPublish")
+    public void excerptPublish() {
+        //读取数据库中未来5分钟以内的所有公开未发布的摘录
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.MINUTE, 5);
+        List<String> excerptIds = crcBookExcerptMapper.getExcerptTaskIds(calendar.getTime());
+        for (String excerptId : excerptIds) {
+            //加载到缓存中
+            stringRedisTemplate.opsForList().leftPush(EXCERPT_PUBLISH_KEY,excerptId);
+        }
+    }
+
+    @XxlJob("crcExcerptCheck")
+    public void excerptCheck(){
+        System.out.println("消费了");
+        while (Boolean.TRUE.equals(stringRedisTemplate.hasKey(EXCERPT_PUBLISH_KEY))){
+            String excerptId = stringRedisTemplate.opsForList().rightPop(EXCERPT_PUBLISH_KEY);
+            crcBookScanService.scanBook(Long.valueOf(excerptId));
+        }
+    }
+
 
     @Override
     public ResponseResult getExcerpt(Long excerptId) {
@@ -186,6 +206,5 @@ public class CrcBookExcerptServiceImpl extends ServiceImpl<CrcBookExcerptMapper,
             }
         }
     }
-
 
 }

@@ -36,4 +36,8 @@ public interface CrcBookMapper extends BaseMapper<CrcBook> {
     List<CrcBookSearchDto> getBookSearchList();
 
     List<CrcBookSearchDto> getRecommendBook();
+
+    List<CrcBookSearchDto> getAuthorBook(@Param("authorId") String authorId,
+                                         @Param("page") Integer page,
+                                         @Param("pageSize") Integer pageSize);
 }

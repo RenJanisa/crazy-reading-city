@@ -15,7 +15,6 @@ import javax.validation.constraints.NotEmpty;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @Document(collection = "crc-book-talk")
 public class Message {
     @Id

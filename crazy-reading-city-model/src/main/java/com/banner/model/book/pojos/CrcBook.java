@@ -5,8 +5,10 @@ import java.io.Serializable;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 /**
  * <p>
@@ -22,13 +24,13 @@ public class CrcBook implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @ApiModelProperty(hidden = true)
+    @ApiModelProperty(value = "添加书籍时为空")
     private Long id;
 
     @NotBlank
     private String bookName;
 
-    @NotBlank
+    @NotNull
     private Long authorId;
 
     private String img;
@@ -39,6 +41,8 @@ public class CrcBook implements Serializable {
      * 页数
      */
     private Integer pages;
+
+    private Integer collect;
 
     /**
      * 书籍目录

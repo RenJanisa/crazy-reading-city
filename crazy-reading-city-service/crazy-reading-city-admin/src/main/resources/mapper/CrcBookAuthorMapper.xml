@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.banner.admin.mapper.CrcBookAuthorMapper">
+
+    <select id="listAuthorByName" resultType="com.banner.model.admin.dtos.BookAuthorListDto">
+        SELECT cba.id,
+               cba.nationality,
+               cba.author_name,
+               (SELECT COUNT(*) FROM crc_book WHERE author_id = cba.id) book_count
+        FROM crc_book_author cba
+        where author_name like #{authorName} limit #{page}
+            , #{pageSize}
+    </select>
+    <select id="listAuthorByNationality" resultType="com.banner.model.admin.dtos.BookAuthorListDto">
+        SELECT cba.id,
+               cba.nationality,
+               cba.author_name,
+               (SELECT COUNT(*) FROM crc_book WHERE author_id = cba.id) book_count
+        FROM crc_book_author cba
+        where nationality like #{nationality} limit #{page}
+            , #{pageSize}
+    </select>
+    <select id="listAuthor" resultType="com.banner.model.admin.dtos.BookAuthorListDto">
+        SELECT cba.id,
+               cba.nationality,
+               cba.author_name,
+               (SELECT COUNT(*) FROM crc_book WHERE author_id = cba.id) book_count
+        FROM crc_book_author cba limit #{page}, #{pageSize}
+    </select>
+
+</mapper>
